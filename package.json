@@ -1,0 +1,41 @@
+{
+	"name": "@sindresorhus/safe-stringify",
+	"version": "0.0.0",
+	"description": "Serialize objects to JSON with handling for circular references",
+	"license": "MIT",
+	"repository": "sindresorhus/safe-stringify",
+	"funding": "https://github.com/sponsors/sindresorhus",
+	"author": {
+		"name": "Sindre Sorhus",
+		"email": "sindresorhus@gmail.com",
+		"url": "https://sindresorhus.com"
+	},
+	"type": "module",
+	"exports": "./index.js",
+	"engines": {
+		"node": ">=14.16"
+	},
+	"scripts": {
+		"test": "xo && ava && tsd"
+	},
+	"files": [
+		"index.js",
+		"index.d.ts"
+	],
+	"keywords": [
+		"json",
+		"stringify",
+		"safe",
+		"circular",
+		"destroy",
+		"serialize",
+		"encode",
+		"cyclic",
+		"object"
+	],
+	"devDependencies": {
+		"ava": "^4.1.0",
+		"tsd": "^0.20.0",
+		"xo": "^0.48.0"
+	}
+}
