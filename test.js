@@ -1,6 +1,10 @@
 import test from 'ava';
 import safeStringify from './index.js';
 
+const options = {
+	indentation: '\t',
+};
+
 test('main', t => {
 	const fixture = {
 		a: true,
@@ -9,7 +13,7 @@ test('main', t => {
 		},
 	};
 
-	t.is(safeStringify(fixture, {indentation: '\t'}), JSON.stringify(fixture, undefined, '\t'));
+	t.is(safeStringify(fixture, options), JSON.stringify(fixture, undefined, '\t'));
 });
 
 test('circular object', t => {
@@ -25,15 +29,33 @@ test('circular object', t => {
 		e: fixture.c,
 	};
 
-	t.snapshot(safeStringify(fixture));
+	t.snapshot(safeStringify(fixture, options));
 });
 
-test('multiple circular objects', t => {
+test('circular array', t => {
+	const fixture = [1];
+
+	fixture.push(fixture, fixture);
+
+	t.snapshot(safeStringify(fixture, options));
+});
+
+test('multiple circular objects in array', t => {
 	const fixture = {
 		a: true,
 	};
 
 	fixture.b = fixture;
 
-	t.snapshot(safeStringify([fixture, fixture]));
+	t.snapshot(safeStringify([fixture, fixture], options));
+});
+
+test('multiple circular objects in object', t => {
+	const fixture = {
+		a: true,
+	};
+
+	fixture.b = fixture;
+
+	t.snapshot(safeStringify({x: fixture, y: fixture}, options));
 });

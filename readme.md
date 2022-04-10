@@ -55,4 +55,4 @@ Set it to `'\t'` for tab indentation or the number of spaces you want.
 
 ### Why another safe stringify package?
 
-The existing ones either did too much, did it incorrectly, or used inefficient code (not using `WeakSet`). For example, many packages incorrectly replaced all duplicate objects, not just circular references.
+The existing ones either did too much, did it incorrectly, or used inefficient code (not using `WeakMap`). For example, many packages incorrectly replaced all duplicate objects, not just circular references, and did not handle circular arrays.
