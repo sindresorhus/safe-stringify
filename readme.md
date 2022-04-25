@@ -23,6 +23,9 @@ console.log(safeStringify(foo));
 
 console.log(JSON.stringify(foo));
 //=> TypeError: Converting circular structure to JSON
+
+console.log(safeStringify(foo, {trace: true}));
+//=> '{ "a": true, "b": "[Circular *]" }'
 ```
 
 ## API
@@ -50,6 +53,14 @@ The indentation of the JSON.
 By default, the JSON is not indented.
 
 Set it to `'\t'` for tab indentation or the number of spaces you want.
+
+##### trace
+
+Type: `boolean`
+
+Enable key tracing for circular references.
+
+By default, this option is set to false.
 
 ## FAQ
 
