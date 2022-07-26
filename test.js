@@ -32,6 +32,19 @@ test('circular object', t => {
 	t.snapshot(safeStringify(fixture, options));
 });
 
+/// test('circular object 2', t => {
+// 	const fixture2 = {
+// 		c: true,
+// 	};
+
+// 	const fixture = {
+// 		a: fixture2,
+// 		b: fixture2,
+// 	};
+
+// 	t.snapshot(safeStringify(fixture, options));
+// });
+
 test('circular array', t => {
 	const fixture = [1];
 
