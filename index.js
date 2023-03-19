@@ -1,19 +1,28 @@
-const makeCircularReplacer = () => {
-	const seen = new WeakMap();
-
-	return (key, value) => {
+function safeStringifyReplacer(seen) {
+	return function (key, value) {
 		if (value !== null && typeof value === 'object') {
-			if (seen.has(value) && seen.get(value) !== key) {
+			if (seen.has(value)) {
 				return '[Circular]';
 			}
 
-			seen.set(value, key);
+			seen.add(value);
+
+			const newValue = Array.isArray(value) ? [] : {};
+
+			for (const [key2, value2] of Object.entries(value)) {
+				newValue[key2] = safeStringifyReplacer(seen)(key2, value2);
+			}
+
+			seen.delete(value);
+
+			return newValue;
 		}
 
 		return value;
 	};
-};
+}
 
 export default function safeStringify(object, {indentation} = {}) {
-	return JSON.stringify(object, makeCircularReplacer(), indentation);
+	const seen = new WeakSet();
+	return JSON.stringify(object, safeStringifyReplacer(seen), indentation);
 }
