@@ -216,3 +216,50 @@ test('array containing objects with the same circular reference', t => {
 
 	t.snapshot(safeStringify(fixture, options));
 });
+
+test('circular object w BigInt custom replacer', t => {
+	const fixture = {
+		a: 123n,
+	};
+
+	fixture.b = fixture;
+
+	fixture.c = [fixture, fixture.b];
+
+	fixture.d = {
+		e: fixture.c,
+	};
+
+	t.snapshot(safeStringify(
+		fixture,
+		{
+			...options,
+			customReplacer: (key, value) =>
+				typeof value === 'bigint' ? value.toString() + 'n' : value,
+		},
+	));
+});
+
+test('custom replacer has correct "this"', t => {
+	const fixture = {
+		foo: 'bar',
+	};
+
+	const customReplacer = function (key, value) {
+		t.is(
+			this,
+			fixture,
+			'The object in which the key was found must be provided as the replacer\'s this context.',
+		);
+
+		return typeof value === 'bigint' ? `${value.toString()}n` : value;
+	};
+
+	t.snapshot(safeStringify(
+		fixture,
+		{
+			...options,
+			customReplacer,
+		},
+	));
+});

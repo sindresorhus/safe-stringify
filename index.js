@@ -22,7 +22,16 @@ function safeStringifyReplacer(seen) {
 	};
 }
 
-export default function safeStringify(object, {indentation} = {}) {
+export default function safeStringify(object, {indentation, customReplacer} = {}) {
 	const seen = new WeakSet();
-	return JSON.stringify(object, safeStringifyReplacer(seen), indentation);
+	let preReplacer = (k, v) => v;
+	if (customReplacer) {
+		preReplacer = customReplacer;
+	}
+
+	return JSON.stringify(
+		object,
+		(key, value) => safeStringifyReplacer(seen)(key, preReplacer.call(object, key, value)),
+		indentation,
+	);
 }

@@ -7,6 +7,12 @@ export type Options = {
 	Set it to `'\t'` for tab indentation or the number of spaces you want.
 	*/
 	readonly indentation?: string | number;
+	/**
+	 Replacer function applied before circularity is detected.
+
+	 see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+	 */
+	customReplacer?: (key: string | number, value: any) => any;
 };
 
 /**
