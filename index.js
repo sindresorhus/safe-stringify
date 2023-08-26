@@ -22,11 +22,11 @@ function safeStringifyReplacer(seen) {
 	};
 }
 
-export default function safeStringify(object, {indentation, customReplacer} = {}) {
+export default function safeStringify(object, {indentation, replacer} = {}) {
 	const seen = new WeakSet();
-	let preReplacer = (k, v) => v;
-	if (customReplacer) {
-		preReplacer = customReplacer;
+	let preReplacer = (key, value) => value;
+	if (replacer) {
+		preReplacer = replacer;
 	}
 
 	return JSON.stringify(

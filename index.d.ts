@@ -8,11 +8,13 @@ export type Options = {
 	*/
 	readonly indentation?: string | number;
 	/**
-	 Replacer function applied before circularity is detected.
+ 	A replacer function as for [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#replacer) to alter the serialization for custom objects.
 
-	 see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-	 */
-	customReplacer?: (key: string | number, value: any) => any;
+	The custom replacer is applied before circularity is detected.
+
+	*Note: Unlike `JSON.stringify` `replacer` cannot be an array.*
+	*/
+	replacer?: (key: string | number, value: unknown) => any;
 };
 
 /**

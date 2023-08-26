@@ -217,7 +217,7 @@ test('array containing objects with the same circular reference', t => {
 	t.snapshot(safeStringify(fixture, options));
 });
 
-test('circular object w BigInt custom replacer', t => {
+test('circular object with BigInt custom replacer', t => {
 	const fixture = {
 		a: 123n,
 	};
@@ -234,7 +234,7 @@ test('circular object w BigInt custom replacer', t => {
 		fixture,
 		{
 			...options,
-			customReplacer: (key, value) =>
+			replacer: (key, value) =>
 				typeof value === 'bigint' ? value.toString() + 'n' : value,
 		},
 	));
@@ -245,7 +245,7 @@ test('custom replacer has correct "this"', t => {
 		foo: 'bar',
 	};
 
-	const customReplacer = function (key, value) {
+	const replacer = function (key, value) {
 		t.is(
 			this,
 			fixture,
@@ -259,7 +259,7 @@ test('custom replacer has correct "this"', t => {
 		fixture,
 		{
 			...options,
-			customReplacer,
+			replacer,
 		},
 	));
 });

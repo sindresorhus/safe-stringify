@@ -23,13 +23,6 @@ console.log(safeStringify(foo));
 
 console.log(JSON.stringify(foo));
 //=> TypeError: Converting circular structure to JSON
-
-//Use customReplacer option to support BigInt
-const bar = {x: 123n};
-bar.y = bar;
-
-console.log(safeStringify(foo, {customReplacer: (k, v) => typeof v === 'bigint' ? `${v.toString()}n` : v}));
-//=> '{"x":"123n","y":"[Circular]"}'
 ```
 
 ## API
@@ -56,13 +49,27 @@ The indentation of the JSON.
 
 By default, the JSON is not indented. Set it to `'\t'` for tab indentation or the number of spaces you want.
 
-##### customReplacer
+##### replacer
 
-Type: `(key: string, value: any) => any`
+Type: `(key: string, value: unknow) => any`
 
-A replacer as for [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) to alter the serialization for custom objects.
+A replacer function as for [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#replacer) to alter the serialization for custom objects.
 
 The custom replacer is applied before circularity is detected.
+
+*Note: Unlike `JSON.stringify` `replacer` cannot be an array.*
+
+Example: Use `replacer` option to support BigInt.
+```js
+const bar = {x: 123n};
+bar.y = bar;
+
+console.log(safeStringify(
+	foo,
+	{replacer: (key, value) => typeof value === 'bigint' ? `${value.toString()}n` : value}
+));
+//=> '{"x":"123n","y":"[Circular]"}'
+```
 
 ## FAQ
 
