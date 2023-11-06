@@ -1,5 +1,5 @@
 {
-	"name": "@sindresorhus/safe-stringify",
+	"name": "safe-stringify",
 	"version": "1.0.0",
 	"description": "Serialize objects to JSON with handling for circular references",
 	"license": "MIT",
@@ -11,7 +11,11 @@
 		"url": "https://sindresorhus.com"
 	},
 	"type": "module",
-	"exports": "./index.js",
+	"exports": {
+		"types": "./index.d.ts",
+		"default": "./index.js"
+	},
+	"sideEffects": false,
 	"engines": {
 		"node": ">=16"
 	},

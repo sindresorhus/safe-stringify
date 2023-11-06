@@ -7,13 +7,13 @@
 ## Install
 
 ```sh
-npm install @sindresorhus/safe-stringify
+npm install safe-stringify
 ```
 
 ## Usage
 
 ```js
-import safeStringify from '@sindresorhus/safe-stringify';
+import safeStringify from 'safe-stringify';
 
 const foo = {a: true};
 foo.b = foo;
