@@ -56,3 +56,7 @@ By default, the JSON is not indented. Set it to `'\t'` for tab indentation or th
 ### Why another safe stringify package?
 
 The existing ones either did too much, did it incorrectly, or used inefficient code (not using `WeakSet`). For example, many packages incorrectly replaced all duplicate objects, not just circular references, and did not handle circular arrays.
+
+## Related
+
+- [decircular](https://github.com/sindresorhus/decircular) - Remove circular references from objects
