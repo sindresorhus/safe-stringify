@@ -1,6 +1,6 @@
 {
 	"name": "safe-stringify",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Serialize objects to JSON with handling for circular references",
 	"license": "MIT",
 	"repository": "sindresorhus/safe-stringify",
