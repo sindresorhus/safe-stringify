@@ -1,5 +1,10 @@
 function safeStringifyReplacer(seen) {
 	return function (key, value) {
+		// Handle objects with a custom `.toJSON()` method.
+		if (typeof value?.toJSON === 'function') {
+			value = value.toJSON();
+		}
+
 		if (!(value !== null && typeof value === 'object')) {
 			return value;
 		}

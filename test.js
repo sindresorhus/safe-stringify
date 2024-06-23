@@ -216,3 +216,160 @@ test('array containing objects with the same circular reference', t => {
 
 	t.snapshot(safeStringify(fixture, options));
 });
+
+test('Date object', t => {
+	const fixture = {
+		date: new Date('2024-06-12T16:06:46.442Z'),
+	};
+
+	t.is(safeStringify(fixture, options), JSON.stringify(fixture, undefined, '\t'));
+});
+
+test('object with toJSON method', t => {
+	const fixture = {
+		a: 1,
+		toJSON() {
+			return {b: 2};
+		},
+	};
+
+	t.is(safeStringify(fixture, options), JSON.stringify(fixture, undefined, '\t'));
+});
+
+test('complex object with Date and toJSON', t => {
+	const fixture = {
+		date: new Date('2024-06-12T16:06:46.442Z'),
+		nested: {
+			toJSON() {
+				return {b: 2};
+			},
+		},
+	};
+
+	t.is(safeStringify(fixture, options), JSON.stringify(fixture, undefined, '\t'));
+});
+
+test('circular object with Date', t => {
+	const fixture = {
+		date: new Date('2024-06-12T16:06:46.442Z'),
+	};
+
+	fixture.self = fixture;
+
+	const expected = JSON.stringify({date: '2024-06-12T16:06:46.442Z', self: '[Circular]'}, undefined, '\t');
+	t.is(safeStringify(fixture, options), expected);
+});
+
+test('nested toJSON methods', t => {
+	const fixture = {
+		a: {
+			toJSON() {
+				return {b: 2};
+			},
+		},
+		b: {
+			toJSON() {
+				return {c: 3};
+			},
+		},
+	};
+
+	t.is(safeStringify(fixture, options), JSON.stringify(fixture, undefined, '\t'));
+});
+
+test('toJSON method returning circular object', t => {
+	const fixture = {
+		a: 1,
+		toJSON() {
+			const x = {b: 2};
+			x.self = x;
+			return x;
+		},
+	};
+
+	const expected = JSON.stringify({b: 2, self: '[Circular]'}, undefined, '\t');
+	t.is(safeStringify(fixture, options), expected);
+});
+
+test('array with objects having toJSON methods', t => {
+	const fixture = [
+		{
+			toJSON() {
+				return {a: 1};
+			},
+		},
+		{
+			toJSON() {
+				return {b: 2};
+			},
+		},
+	];
+
+	t.is(safeStringify(fixture, options), JSON.stringify(fixture, undefined, '\t'));
+});
+
+test('array with Date objects and toJSON methods', t => {
+	const fixture = [
+		new Date('2024-06-12T16:06:46.442Z'),
+		{
+			toJSON() {
+				return {b: 2};
+			},
+		},
+	];
+
+	t.is(safeStringify(fixture, options), JSON.stringify(fixture, undefined, '\t'));
+});
+
+test('complex object with circular references and toJSON', t => {
+	const shared = {
+		x: 1,
+		toJSON() {
+			return {
+				x: this.x,
+			};
+		},
+	};
+
+	const circular = {
+		y: 2,
+		toJSON() {
+			return {
+				y: this.y,
+				self: '[Circular]',
+			};
+		},
+	};
+
+	circular.self = circular;
+
+	const fixture = {
+		a: shared,
+		b: {
+			c: shared,
+			d: circular,
+		},
+		e: circular,
+	};
+
+	const expected = JSON.stringify({
+		a: {
+			x: 1,
+		},
+		b: {
+			c: {
+				x: 1,
+			},
+			d: {
+				y: 2,
+				self: '[Circular]',
+			},
+		},
+		e: {
+			y: 2,
+			self: '[Circular]',
+		},
+	}, undefined, '\t');
+
+	t.is(safeStringify(fixture, options), expected);
+});
