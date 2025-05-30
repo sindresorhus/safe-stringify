@@ -1,5 +1,5 @@
 function safeStringifyReplacer(seen) {
-	return function (key, value) {
+	const replacer = function (key, value) {
 		// Handle objects with a custom `.toJSON()` method.
 		if (typeof value?.toJSON === 'function') {
 			value = value.toJSON();
@@ -18,13 +18,15 @@ function safeStringifyReplacer(seen) {
 		const newValue = Array.isArray(value) ? [] : {};
 
 		for (const [key2, value2] of Object.entries(value)) {
-			newValue[key2] = safeStringifyReplacer(seen)(key2, value2);
+			newValue[key2] = replacer(key2, value2);
 		}
 
 		seen.delete(value);
 
 		return newValue;
 	};
+
+	return replacer;
 }
 
 export default function safeStringify(object, {indentation} = {}) {
