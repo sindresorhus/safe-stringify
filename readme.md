@@ -23,6 +23,7 @@ console.log(safeStringify(foo));
 
 console.log(JSON.stringify(foo));
 //=> TypeError: Converting circular structure to JSON
+
 ```
 
 ## API
@@ -50,6 +51,22 @@ Type: `'string' | 'number'`
 The indentation of the JSON.
 
 By default, the JSON is not indented. Set it to `'\t'` for tab indentation or the number of spaces you want.
+
+##### trace
+
+Type: `boolean`
+
+Include the full object path in circular reference markers, like `[Circular *a.b]`.
+
+```js
+import safeStringify from 'safe-stringify';
+
+const bar = {a: {b: {}}};
+bar.a.b.c = bar.a;
+
+console.log(safeStringify(bar, {trace: true}));
+//=> '{"a":{"b":{"c":"[Circular *a]"}}}'
+```
 
 ## FAQ
 

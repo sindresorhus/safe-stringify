@@ -1,35 +1,39 @@
-function safeStringifyReplacer(seen) {
-	const replacer = function (key, value) {
-		// Handle objects with a custom `.toJSON()` method.
-		if (typeof value?.toJSON === 'function') {
-			value = value.toJSON();
-		}
+function serializeValue(value, seen, trace, currentPath) {
+	// Handle objects with a custom `.toJSON()` method.
+	if (typeof value?.toJSON === 'function') {
+		value = value.toJSON();
+	}
 
-		if (!(value !== null && typeof value === 'object')) {
-			return value;
-		}
+	if (!(value !== null && typeof value === 'object')) {
+		return value;
+	}
 
-		if (seen.has(value)) {
+	if (seen.has(value)) {
+		if (!trace) {
 			return '[Circular]';
 		}
 
-		seen.add(value);
+		const existingPath = seen.get(value);
+		const circularPath = existingPath === '' ? '*' : `*${existingPath}`;
+		return `[Circular ${circularPath}]`;
+	}
 
-		const newValue = Array.isArray(value) ? [] : {};
+	seen.set(value, currentPath);
 
-		for (const [key2, value2] of Object.entries(value)) {
-			newValue[key2] = replacer(key2, value2);
-		}
+	const newValue = Array.isArray(value) ? [] : {};
 
-		seen.delete(value);
+	for (const [propertyKey, propertyValue] of Object.entries(value)) {
+		const nextPath = currentPath === '' ? propertyKey : `${currentPath}.${propertyKey}`;
+		newValue[propertyKey] = serializeValue(propertyValue, seen, trace, nextPath);
+	}
 
-		return newValue;
-	};
+	seen.delete(value);
 
-	return replacer;
+	return newValue;
 }
 
-export default function safeStringify(object, {indentation} = {}) {
-	const seen = new WeakSet();
-	return JSON.stringify(object, safeStringifyReplacer(seen), indentation);
+export default function safeStringify(value, {indentation, trace} = {}) {
+	const seen = new WeakMap();
+	const serializedValue = serializeValue(value, seen, trace, '');
+	return JSON.stringify(serializedValue, undefined, indentation);
 }

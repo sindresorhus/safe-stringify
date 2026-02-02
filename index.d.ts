@@ -7,6 +7,22 @@ export type Options = {
 	Set it to `'\t'` for tab indentation or the number of spaces you want.
 	*/
 	readonly indentation?: string | number;
+
+	/**
+	Include the full object path in circular reference markers, like `[Circular *a.b]`.
+
+	@example
+	```
+	import safeStringify from 'safe-stringify';
+
+	const bar = {a: {b: {}}};
+	bar.a.b.c = bar.a;
+
+	console.log(safeStringify(bar, {trace: true}));
+	//=> '{"a":{"b":{"c":"[Circular *a]"}}}'
+	```
+	*/
+	readonly trace?: boolean;
 };
 
 /**

@@ -5,6 +5,11 @@ const options = {
 	indentation: '\t',
 };
 
+const traceOptions = {
+	indentation: '\t',
+	trace: true,
+};
+
 test('main', t => {
 	const fixture = {
 		a: true,
@@ -30,6 +35,20 @@ test('circular object', t => {
 	};
 
 	t.snapshot(safeStringify(fixture, options));
+});
+
+test('circular object with trace', t => {
+	const fixture = {
+		a: {
+			b: [],
+		},
+	};
+
+	fixture.self = fixture;
+	fixture.a.self = fixture.a;
+	fixture.a.b.push(fixture, fixture.a, fixture.a.b);
+
+	t.snapshot(safeStringify(fixture, traceOptions));
 });
 
 test('circular object 2', t => {
